@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <style>
+      #time{
+        font-size: 25px;
+        text-align: right;
+}
+      .score { 
+           font-size: 2.5em;
+         
+        }
+    #lord {
+    width: 23%;
+}
+#button{
+  background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+h1{
+  text-align: center;
+  font-family: sans-serif;
+  text-shadow: black -0.5px 0.5px;
+     color: black;
+     font-weight: 50;
+
+}
+
+    </style>
+    
+  </head>
+
+  <body>
+    <script type="text/javascript">
+      // Global variables.
+      var ballX = 300; // Ball x position.
+      var ballY = 300; // Ball y position.
+      var ballDX = 2; // Change in ball x position.
+      var ballDY = 4; // Change in ball y position.
+      var boardX = 500; // Board width.
+      var boardY = 500; // Board height.
+      var paddleX = 300; // Initial paddle location.
+      
+      var paddleH = 15; // Paddle height.
+      
+      var paddleD = boardY - paddleH; // Paddle depth.
+      var paddleW = 150; // Paddle width.
+      var canvas; // Canvas element.
+      var ctx; // Canvas context.
+      var gameLoop; // Game loop time interval.
+      var score = 0;
+      // This function is called on page load.
+
+
+      function drawGameCanvas() {
+
+        // Get the canvas element.
+        canvas = document.getElementById("gameBoard");
+        
+        // Make sure you got it.
+        if (canvas.getContext) {
+          // Specify 2d canvas type.
+          ctx = canvas.getContext("2d");
+
+          // Play the game until the ball stops.
+          gameLoop = setInterval(drawBall, 14);
+
+          // Add keyboard listener.
+          window.addEventListener('keydown', whatKey, true);
+
+        }
+      }
+
+      function drawBall() {
+
+        // Clear the board.
+        ctx.clearRect(0, 0, boardX, boardY);
+
+        // Fill the board.
+        ctx.fillStyle = "white";
+        ctx.beginPath();
+        ctx.rect(0, 0, boardX, boardY);
+        ctx.closePath();
+        ctx.fill();
+
+        // Draw a ball.
+        ctx.fillStyle = "black";
+        ctx.beginPath();
+        ctx.arc(ballX, ballY, 15, 0, Math.PI * 2, true);
+        ctx.closePath();
+        ctx.fill();
+
+        // Draw the paddle.
+        ctx.fillStyle = "black";
+        ctx.beginPath();
+        ctx.rect(paddleX, paddleD, paddleW, paddleH);
+        ctx.closePath();
+        ctx.fill();
+
+        // Change the ball location.
+        ballX += ballDX;
+        ballY += ballDY;
+
+        // Bounce on a left or right edge.
+        if (ballX + ballDX > boardX - 15 || ballX + ballDX < 15){
+         ballDX = -ballDX;
+        }
+        // If ball hits the top, bounce it. 
+        if (ballY + ballDY < 15) ballDY = -ballDY;
+        // If the ball hits the bottom, check see if it hits a paddle.
+        else if (ballY + ballDY > boardY - 15) {
+          // If the ball hits the paddle, bounce it.
+          if (ballX > paddleX && ballX < paddleX + paddleW){ 
+            ballDY = -ballDY;
+          }
+          // Otherwise the game is over.
+          else {
+            clearInterval(gameLoop);
+            alert("Game over!");
+          }
+        //added toggling script
+        if (ballY = 300)
+          score = score + 1;
+          var scoreboard = parseInt(score);
+          setColor(); 
+
+        function setColor() {
+          var randomNumberBetween0and4 = Math.floor(Math.random() * 5);
+          var colors = ["bisque","yellow", "orange", "grey","aliceblue"];
+          var x = document.body;
+          x.style.backgroundColor = colors[randomNumberBetween0and4];
+          
+          document.getElementById("score").innerHTML = scoreboard;
+          //x.style.backgroundColor = x.style.backgroundColor == "yellow" ? "pink" : "yellow";
+           } 
+        }
+      }
+
+      // Get key press.
+
+
+      function whatKey(evt) {
+
+        switch (evt.keyCode) {
+          // Left arrow.
+        case 37:
+          paddleX = paddleX - 20;
+          if (paddleX < 0) paddleX = 0;
+          break;
+
+          // Right arrow.
+        case 39:
+          paddleX = paddleX + 20;
+          if (paddleX > boardX - paddleW) paddleX = boardX - paddleW;
+          break;
+        }
+      }
+      //added time script
+      var myTimeVar = setInterval(function(){ myTimer() }, 1000);
+
+function myTimer() {
+    var d = new Date();
+    var t = d.toLocaleTimeString();
+    document.getElementById("time").innerHTML = t;
+}
+
+    </script>
+    <h1>
+      LORD OF THE PING PONG
+    </h1>
+
+    <button onclick="drawGameCanvas()" id="button">Start Game</button>
+     <div class="score">Score: <span id="score">0</span></div> 
+    <div>
+      <div class ="right"><img src="lord.jpg" alt="lord" style="width:23%">
+      <canvas id="gameBoard" width="500" height="500"></canvas>
+      
+      </div>
+      
+      <p id = "time"></p>
+     
+
+    </div>
+  </body>
+
+</html>
